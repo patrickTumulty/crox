@@ -2,6 +2,11 @@
 #ifndef GREEDY_MAT_H
 #define GREEDY_MAT_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "crox_types.h"
 #include "matrix.h"
 #include <stddef.h>
@@ -55,5 +60,9 @@ Rc matrix_init_greedy_f32(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_greedy_f64(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_greedy_bool(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_greedy_ptr(matrix_t *out, int32_t height, int32_t width);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // GREEDY_MAT_H

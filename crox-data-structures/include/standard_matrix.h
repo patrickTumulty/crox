@@ -2,6 +2,11 @@
 #ifndef STANDARD_MAT_H
 #define STANDARD_MAT_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "crox_types.h"
 #include "matrix.h"
 #include <stddef.h>
@@ -58,5 +63,9 @@ Rc matrix_init_f32(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_f64(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_bool(matrix_t *out, int32_t height, int32_t width);
 Rc matrix_init_ptr(matrix_t *out, int32_t height, int32_t width);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // STANDARD_MAT_H

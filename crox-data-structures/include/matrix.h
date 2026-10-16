@@ -2,6 +2,11 @@
 #ifndef MATRIX_H
 #define MATRIX_H
 
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
 #include "crox_types.h"
 #include <stdbool.h>
 #include <stdint.h>
@@ -168,5 +173,9 @@ Rc matrix_set_bool(matrix_bool_t mat, i32 x, i32 y, bool v);
 void *matrix_get_ptr(matrix_ptr_t mat, i32 x, i32 y);
 /** @brief Write a pointer cell. */
 Rc matrix_set_ptr(matrix_ptr_t mat, i32 x, i32 y, const void *v);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif // MATRIX_H
