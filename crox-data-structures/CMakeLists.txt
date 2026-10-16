@@ -27,18 +27,23 @@ target_link_libraries(${PROJECT_NAME}
         crox-base
 )
 
-add_executable(${PROJECT_NAME}_tests)
+# Tests are only meaningful when building for the host. A cross build (e.g.
+# arm64) turns BUILD_TESTING off at the top level, and gating here keeps both
+# the test executable and its CTest registration out of that build entirely.
+if(BUILD_TESTING)
+    add_executable(${PROJECT_NAME}_tests)
 
-target_sources(${PROJECT_NAME}_tests
-    PRIVATE
-        test/main.c
-)
+    target_sources(${PROJECT_NAME}_tests
+        PRIVATE
+            test/main.c
+    )
 
-target_link_libraries(${PROJECT_NAME}_tests
-    PUBLIC
-        ${PROJECT_NAME}
-        munit
-)
+    target_link_libraries(${PROJECT_NAME}_tests
+        PUBLIC
+            ${PROJECT_NAME}
+            munit
+    )
 
-add_test(NAME ${PROJECT_NAME}_tests COMMAND ${PROJECT_NAME}_tests)
+    add_test(NAME ${PROJECT_NAME}_tests COMMAND ${PROJECT_NAME}_tests)
+endif()
 
