@@ -5,6 +5,8 @@ project(crox-data-structures LANGUAGES C)
 
 add_library(${PROJECT_NAME} STATIC)
 
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
+
 target_sources(${PROJECT_NAME}
     PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.c
