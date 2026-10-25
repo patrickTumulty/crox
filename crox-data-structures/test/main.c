@@ -1,9 +1,10 @@
 
 #include "crox_types.h"
 #include "greedy_matrix.h"
+#include "ipv4_address.h"
 #include "matrix.h"
-#include "standard_matrix.h"
 #include "munit.h"
+#include "standard_matrix.h"
 #include <stddef.h>
 #include <stdint.h>
 #include <string.h>
@@ -13,7 +14,7 @@
  * same assertions must hold for both the greedy and standard matrices. */
 static MunitParameterEnum test_params[] = {
     {(char *)"impl", (char *[]){(char *)"greedy", (char *)"standard", NULL}},
-    {NULL, NULL},
+    {NULL,           NULL                                                  },
 };
 
 /* Signature shared by every typed (per-variant) initializer. */
@@ -295,8 +296,14 @@ static MunitResult test_get_set_ptr(const MunitParameter params[], void *user_da
 
     const int32_t count = 8;
     Point points[8] = {
-        {0, 0, 0}, {1, 2, 0}, {3, 4, 0}, {5, 6, 0},
-        {7, 8, 0}, {9, 10, 0}, {11, 12, 0}, {13, 14, 0},
+        {0,  0,  0},
+        {1,  2,  0},
+        {3,  4,  0},
+        {5,  6,  0},
+        {7,  8,  0},
+        {9,  10, 0},
+        {11, 12, 0},
+        {13, 14, 0},
     };
 
     matrix_ptr_t mat = NULL;
@@ -561,30 +568,71 @@ static MunitResult test_errors(const MunitParameter params[], void *user_data)
     return MUNIT_OK;
 }
 
-static MunitTest test_suite_tests[] = {
-    {(char *)"/create", test_create, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/dimensions/null", test_dimensions_null, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/int32", test_get_set_int32, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/8bit", test_get_set_8bit, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/16bit", test_get_set_16bit, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/32bit", test_get_set_32bit, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/64bit", test_get_set_64bit, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/bool", test_get_set_bool, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-set/ptr", test_get_set_ptr, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/get-cell/struct", test_get_cell_struct, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/init/variants", test_init_variants, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/resize", test_resize, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/free/null", test_free_null, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/null-safety", test_null_safety, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {(char *)"/errors", test_errors, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
-    {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}};
+/* Octet members and the 32 bit word view share the same storage. */
+static MunitResult test_ipv4_octets(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
 
-static const MunitSuite test_suite = {
-    (char *)"crox",
-    test_suite_tests,
-    NULL,
-    1,
-    MUNIT_SUITE_OPTION_NONE};
+    ipv4_address_t address = ipv4(127, 11, 22, 33);
+    munit_assert_uint8(address.o3, ==, 127);
+    munit_assert_uint8(address.o2, ==, 11);
+    munit_assert_uint8(address.o1, ==, 22);
+    munit_assert_uint8(address.o0, ==, 33);
+    /* The word view stores the octets in declaration order, o3 first. */
+    munit_assert_uint32(address.ip, ==, (UINT32_C(127) << 0) | (UINT32_C(11) << 8) | (UINT32_C(22) << 16) | 33U << 24);
+
+    /* The word view writes through to the octets. */
+    address.ip = 0;
+    munit_assert_uint8(address.o3, ==, 0);
+
+    return MUNIT_OK;
+}
+
+/* to-string renders the octets as dot-separated decimals. */
+static MunitResult test_ipv4_to_string(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    ipv4_address_t address = {.o3 = 192, .o2 = 168, .o1 = 0, .o0 = 42};
+    char buffer[16];
+    munit_assert_string_equal(ipv4_address_to_string(address, buffer, sizeof(buffer)), "192.168.0.42");
+
+    /* NULL address is answered, not crashed on. */
+    munit_assert_string_equal(ipv4_address_to_string((ipv4_address_t){0}, buffer, sizeof(buffer)), "0.0.0.0");
+
+    /* Degraded arguments. */
+    char tiny[4];
+    munit_assert_not_null(ipv4_address_to_string(address, tiny, 8)); /* still valid: truncated */
+    munit_assert_null(ipv4_address_to_string(address, NULL, sizeof(buffer)));
+    munit_assert_null(ipv4_address_to_string(address, buffer, 0));
+
+    return MUNIT_OK;
+}
+
+static MunitTest test_suite_tests[] = {
+    {(char *)"/ipv4/octets",     test_ipv4_octets,     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL       },
+    {(char *)"/ipv4/to-string",  test_ipv4_to_string,  NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL       },
+    {(char *)"/create",          test_create,          NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/dimensions/null", test_dimensions_null, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/int32",   test_get_set_int32,   NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/8bit",    test_get_set_8bit,    NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/16bit",   test_get_set_16bit,   NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/32bit",   test_get_set_32bit,   NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/64bit",   test_get_set_64bit,   NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/bool",    test_get_set_bool,    NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-set/ptr",     test_get_set_ptr,     NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/get-cell/struct", test_get_cell_struct, NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/init/variants",   test_init_variants,   NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/resize",          test_resize,          NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/free/null",       test_free_null,       NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/null-safety",     test_null_safety,     NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {(char *)"/errors",          test_errors,          NULL, NULL, MUNIT_TEST_OPTION_NONE, test_params},
+    {NULL,                       NULL,                 NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL       }
+};
+
+static const MunitSuite test_suite = {(char *)"crox", test_suite_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE};
 
 int main(int argc, char *argv[MUNIT_ARRAY_PARAM(argc + 1)])
 {

@@ -12,6 +12,7 @@ target_sources(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/src/matrix.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/greedy_matrix.c
         ${CMAKE_CURRENT_SOURCE_DIR}/src/standard_matrix.c
+        ${CMAKE_CURRENT_SOURCE_DIR}/src/ipv4_address.c
 )
 
 target_include_directories(${PROJECT_NAME}
