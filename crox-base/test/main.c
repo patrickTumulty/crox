@@ -268,6 +268,142 @@ static MunitResult test_replace_cp_empty_input(const MunitParameter params[], vo
     return MUNIT_OK;
 }
 
+/* The join buffer is pre-zeroed so stray writes past the string get caught. */
+#define JOIN_PREPARE(buf) memset(buf, 0, sizeof(buf));
+
+/* Several tokens joined with a multi-character delimiter, with an empty
+ * token counted in the middle. */
+static MunitResult test_str_join_basic(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[32];
+    JOIN_PREPARE(buf);
+
+    char *tokens[] = {"one", "", "two", "three"};
+    str_join(buf, sizeof(buf), tokens, 4, ", ");
+    munit_assert_string_equal(buf, "one, , two, three");
+
+    return MUNIT_OK;
+}
+
+/* A single token produces no delimiter; zero tokens produce an empty string
+ * even with no token array at all. */
+static MunitResult test_str_join_degenerate_counts(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[16];
+    JOIN_PREPARE(buf);
+
+    char *solo[] = {"solo"};
+    str_join(buf, sizeof(buf), solo, 1, ", ");
+    munit_assert_string_equal(buf, "solo");
+
+    str_join(buf, sizeof(buf), NULL, 0, ", ");
+    munit_assert_string_equal(buf, "");
+
+    return MUNIT_OK;
+}
+
+/* An empty delimiter degenerates to plain concatenation. */
+static MunitResult test_str_join_empty_delimiter(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[32];
+    JOIN_PREPARE(buf);
+
+    char *tokens[] = {"GET", "/index.html", "HTTP/1.1"};
+    str_join(buf, sizeof(buf), tokens, 3, "");
+    munit_assert_string_equal(buf, "GET/index.htmlHTTP/1.1");
+
+    return MUNIT_OK;
+}
+
+/* Empty leading tokens still emit their delimiters. */
+static MunitResult test_str_join_empty_tokens(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[16];
+    JOIN_PREPARE(buf);
+
+    char *tokens[] = {"", "", "a"};
+    str_join(buf, sizeof(buf), tokens, 3, "-");
+    munit_assert_string_equal(buf, "--a");
+
+    return MUNIT_OK;
+}
+
+/* An oversized token truncates mid-way: whatever snprintf already placed
+ * stays behind and the string remains terminated. */
+static MunitResult test_str_join_truncate_token(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[5];
+    JOIN_PREPARE(buf);
+
+    char *tokens[] = {"hello", "world"};
+    str_join(buf, sizeof(buf), tokens, 2, "");
+    munit_assert_string_equal(buf, "hell");
+    munit_assert_size(strlen(buf), <, sizeof(buf));
+
+    return MUNIT_OK;
+}
+
+/* The delimiter is counted too: result the size of the buffer minus one fits
+ * exactly, one byte short keeps the truncated delimiter written so far. */
+static MunitResult test_str_join_capacity_boundary(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char fits[6];
+    JOIN_PREPARE(fits);
+    char *tokens[] = {"aa", "bb"};
+
+    str_join(fits, sizeof(fits), tokens, 2, ",");
+    munit_assert_string_equal(fits, "aa,bb");
+
+    char tight[5];
+    JOIN_PREPARE(tight);
+    str_join(tight, sizeof(tight), tokens, 2, ",");
+    munit_assert_string_equal(tight, "aa,b");
+    munit_assert_size(strlen(tight), <, sizeof(tight));
+
+    return MUNIT_OK;
+}
+
+/* Tokens already known to fit leave earlier tokens intact once a later one
+ * runs out of room. */
+static MunitResult test_str_join_truncate_prefix(const MunitParameter params[], void *user_data)
+{
+    (void)params;
+    (void)user_data;
+
+    char buf[5];
+    JOIN_PREPARE(buf);
+
+    char *tokens[] = {"abc", "def", "ghi"};
+    str_join(buf, sizeof(buf), tokens, 3, "");
+    munit_assert_string_equal(buf, "abcd");
+
+    /* One byte smaller: the partial character has no room either. */
+    char tiny[4];
+    JOIN_PREPARE(tiny);
+    str_join(tiny, sizeof(tiny), tokens, 3, "");
+    munit_assert_string_equal(tiny, "abc");
+
+    return MUNIT_OK;
+}
+
 static MunitTest test_suite_tests[] = {
     {(char *)"/timestamp/sane",               test_timestamp_sane,                        NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {(char *)"/replace/ip/single",            test_replace_ip_single,                     NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
@@ -282,7 +418,14 @@ static MunitTest test_suite_tests[] = {
     {(char *)"/replace/cp/basic",             test_replace_cp_basic,                      NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {(char *)"/replace/cp/truncation",        test_replace_cp_truncation,                 NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
     {(char *)"/replace/cp/empty-input",       test_replace_cp_empty_input,                NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
-    {NULL,                                    NULL,                                       NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
+    {(char *)"/join/basic",                   test_str_join_basic,                        NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/counts",                  test_str_join_degenerate_counts,            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/empty-delimiter",         test_str_join_empty_delimiter,              NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/empty-tokens",            test_str_join_empty_tokens,                 NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/truncate-token",          test_str_join_truncate_token,               NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/capacity/boundary",       test_str_join_capacity_boundary,            NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {(char *)"/join/truncate-prefix",         test_str_join_truncate_prefix,              NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL},
+    {NULL, NULL, NULL, NULL, MUNIT_TEST_OPTION_NONE, NULL}
 };
 
 static const MunitSuite test_suite = {(char *)"crox-base", test_suite_tests, NULL, 1, MUNIT_SUITE_OPTION_NONE};

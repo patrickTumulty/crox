@@ -56,8 +56,29 @@ void str_replace_ip(char *str, const size_t str_capacity, const char *find, cons
     }
 }
 
-void str_replace_cp(const char *str, char *out_str, const size_t out_str_capacity, const char *find, const char *replace)
+void str_replace_cp(const char *str,               //
+                    char *out_str,                 //
+                    const size_t out_str_capacity, //
+                    const char *find,              //
+                    const char *replace)
 {
     snprintf(out_str, out_str_capacity, "%s", str);
     str_replace_ip(out_str, out_str_capacity, find, replace);
+}
+
+void str_join(char *str, const size_t str_capacity, char *tokens[], const size_t tokens_count, const char *delimiter)
+{
+    str[0] = '\0';
+    size_t used = 0;
+    for (size_t i = 0; i < tokens_count; i++)
+    {
+        /* Distinguish the first output by position: an empty token writes
+         * nothing, so a used-byte count cannot tell the two apart. */
+        const int written = snprintf(str + used, str_capacity - used, "%s%s", i == 0 ? "" : delimiter, tokens[i]);
+        if (written < 0 || (size_t)written >= str_capacity - used)
+        {
+            break; // No room for the next token; keep what fit.
+        }
+        used += (size_t)written;
+    }
 }
