@@ -16,7 +16,7 @@ typedef uint64_t u64;
 typedef float f32;
 typedef double f64;
 
-typedef enum
+typedef enum rc_e
 {
     RC_OK = 0,
     RC_ERROR,
@@ -25,8 +25,8 @@ typedef enum
     RC_BAD_INPUT_ARG,
     RC_MEM_ALLOC_ERROR,
     RC_ALREADY_DONE,
-} Rc;
+} rc_t;
 
-#define STR_OR_DEFAULT(STR, DEF) ((STR) != NULL ? (STR) : (DEF))
+#define CROX_STR_OR_DEFAULT(STR, DEF) ((STR) != NULL ? (STR) : (DEF))
 
 #endif // CROX_TYPES_H

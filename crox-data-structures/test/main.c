@@ -18,7 +18,7 @@ static MunitParameterEnum test_params[] = {
 };
 
 /* Signature shared by every typed (per-variant) initializer. */
-typedef Rc (*matrix_init_fn)(matrix_t *out, int32_t height, int32_t width);
+typedef rc_t (*matrix_init_fn)(matrix_t *out, int32_t height, int32_t width);
 
 /* Pick the typed initializer for @p token on the named implementation. */
 static matrix_init_fn variant_init(const char *impl, const char *token)
@@ -53,7 +53,7 @@ static matrix_init_fn variant_init(const char *impl, const char *token)
 
 /* Create a matrix on the named implementation through the untyped entry point.
  * Only needed for a cell type that has no built-in variant, such as a struct. */
-static Rc init_generic(const char *impl, matrix_t *out, int32_t height, int32_t width, size_t typeSize)
+static rc_t init_generic(const char *impl, matrix_t *out, int32_t height, int32_t width, size_t typeSize)
 {
     if (strcmp(impl, "standard") == 0)
         return matrix_init(out, height, width, typeSize);

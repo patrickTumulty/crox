@@ -57,7 +57,7 @@ i32 matrix_get_width(matrix_t mat);
  *                            resulting size would overflow.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed; the matrix is left unchanged.
  */
-Rc matrix_resize(matrix_t mat, i32 height, i32 width);
+rc_t matrix_resize(matrix_t mat, i32 height, i32 width);
 
 /**
  * @brief Free a matrix and its backing store.
@@ -117,62 +117,62 @@ typedef matrix_t matrix_ptr_t;
 /** @brief Read an 8-bit signed cell. */
 i8 matrix_get_i8(matrix_i8_t mat, i32 x, i32 y);
 /** @brief Write an 8-bit signed cell. */
-Rc matrix_set_i8(matrix_i8_t mat, i32 x, i32 y, i8 v);
+rc_t matrix_set_i8(matrix_i8_t mat, i32 x, i32 y, i8 v);
 
 /** @brief Read an 8-bit unsigned cell. */
 u8 matrix_get_u8(matrix_u8_t mat, i32 x, i32 y);
 /** @brief Write an 8-bit unsigned cell. */
-Rc matrix_set_u8(matrix_u8_t mat, i32 x, i32 y, u8 v);
+rc_t matrix_set_u8(matrix_u8_t mat, i32 x, i32 y, u8 v);
 
 /** @brief Read a 16-bit signed cell. */
 i16 matrix_get_i16(matrix_i16_t mat, i32 x, i32 y);
 /** @brief Write a 16-bit signed cell. */
-Rc matrix_set_i16(matrix_i16_t mat, i32 x, i32 y, i16 v);
+rc_t matrix_set_i16(matrix_i16_t mat, i32 x, i32 y, i16 v);
 
 /** @brief Read a 16-bit unsigned cell. */
 u16 matrix_get_u16(matrix_u16_t mat, i32 x, i32 y);
 /** @brief Write a 16-bit unsigned cell. */
-Rc matrix_set_u16(matrix_u16_t mat, i32 x, i32 y, u16 v);
+rc_t matrix_set_u16(matrix_u16_t mat, i32 x, i32 y, u16 v);
 
 /** @brief Read a 32-bit signed cell. */
 i32 matrix_get_i32(matrix_i32_t mat, i32 x, i32 y);
 /** @brief Write a 32-bit signed cell. */
-Rc matrix_set_i32(matrix_i32_t mat, i32 x, i32 y, i32 v);
+rc_t matrix_set_i32(matrix_i32_t mat, i32 x, i32 y, i32 v);
 
 /** @brief Read a 32-bit unsigned cell. */
 u32 matrix_get_u32(matrix_u32_t mat, i32 x, i32 y);
 /** @brief Write a 32-bit unsigned cell. */
-Rc matrix_set_u32(matrix_u32_t mat, i32 x, i32 y, u32 v);
+rc_t matrix_set_u32(matrix_u32_t mat, i32 x, i32 y, u32 v);
 
 /** @brief Read a 64-bit signed cell. */
 i64 matrix_get_i64(matrix_i64_t mat, i32 x, i32 y);
 /** @brief Write a 64-bit signed cell. */
-Rc matrix_set_i64(matrix_i64_t mat, i32 x, i32 y, i64 v);
+rc_t matrix_set_i64(matrix_i64_t mat, i32 x, i32 y, i64 v);
 
 /** @brief Read a 64-bit unsigned cell. */
 u64 matrix_get_u64(matrix_u64_t mat, i32 x, i32 y);
 /** @brief Write a 64-bit unsigned cell. */
-Rc matrix_set_u64(matrix_u64_t mat, i32 x, i32 y, u64 v);
+rc_t matrix_set_u64(matrix_u64_t mat, i32 x, i32 y, u64 v);
 
 /** @brief Read a 32-bit float cell. */
 f32 matrix_get_f32(matrix_f32_t mat, i32 x, i32 y);
 /** @brief Write a 32-bit float cell. */
-Rc matrix_set_f32(matrix_f32_t mat, i32 x, i32 y, f32 v);
+rc_t matrix_set_f32(matrix_f32_t mat, i32 x, i32 y, f32 v);
 
 /** @brief Read a 64-bit double cell. */
 f64 matrix_get_f64(matrix_f64_t mat, i32 x, i32 y);
 /** @brief Write a 64-bit double cell. */
-Rc matrix_set_f64(matrix_f64_t mat, i32 x, i32 y, f64 v);
+rc_t matrix_set_f64(matrix_f64_t mat, i32 x, i32 y, f64 v);
 
 /** @brief Read a boolean cell. */
 bool matrix_get_bool(matrix_bool_t mat, i32 x, i32 y);
 /** @brief Write a boolean cell. */
-Rc matrix_set_bool(matrix_bool_t mat, i32 x, i32 y, bool v);
+rc_t matrix_set_bool(matrix_bool_t mat, i32 x, i32 y, bool v);
 
 /** @brief Read a pointer cell. */
 void *matrix_get_ptr(matrix_ptr_t mat, i32 x, i32 y);
 /** @brief Write a pointer cell. */
-Rc matrix_set_ptr(matrix_ptr_t mat, i32 x, i32 y, const void *v);
+rc_t matrix_set_ptr(matrix_ptr_t mat, i32 x, i32 y, const void *v);
 
 #ifdef __cplusplus
 }

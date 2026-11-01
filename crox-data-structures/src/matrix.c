@@ -43,7 +43,7 @@ int32_t matrix_get_width(matrix_t mat)
  * @retval RC_BAD_INPUT_ARG   A dimension is not positive or the size overflows.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed; the matrix is left unchanged.
  */
-Rc matrix_resize(matrix_t mat, int32_t height, int32_t width)
+rc_t matrix_resize(matrix_t mat, int32_t height, int32_t width)
 {
     if (mat == NULL)
         return RC_NOT_INITIALIZED;
@@ -65,7 +65,7 @@ void matrix_free(matrix_t mat)
 }
 
 /* Dispatch a typed read to the concrete implementation. */
-static Rc matrix_get_internal(matrix_t mat, int32_t x, int32_t y, void *out, size_t size)
+static rc_t matrix_get_internal(matrix_t mat, int32_t x, int32_t y, void *out, size_t size)
 {
     if (mat == NULL)
         return RC_NOT_INITIALIZED;
@@ -74,7 +74,7 @@ static Rc matrix_get_internal(matrix_t mat, int32_t x, int32_t y, void *out, siz
 }
 
 /* Dispatch a typed write to the concrete implementation. */
-static Rc matrix_set_internal(matrix_t mat, int32_t x, int32_t y, const void *v, size_t size)
+static rc_t matrix_set_internal(matrix_t mat, int32_t x, int32_t y, const void *v, size_t size)
 {
     if (mat == NULL)
         return RC_NOT_INITIALIZED;
@@ -178,62 +178,62 @@ void *matrix_get_ptr(matrix_ptr_t mat, i32 x, i32 y)
     return v;
 }
 
-Rc matrix_set_i8(matrix_i8_t mat, i32 x, i32 y, i8 v)
+rc_t matrix_set_i8(matrix_i8_t mat, i32 x, i32 y, i8 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_u8(matrix_u8_t mat, i32 x, i32 y, u8 v)
+rc_t matrix_set_u8(matrix_u8_t mat, i32 x, i32 y, u8 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_i16(matrix_i16_t mat, i32 x, i32 y, i16 v)
+rc_t matrix_set_i16(matrix_i16_t mat, i32 x, i32 y, i16 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_u16(matrix_u16_t mat, i32 x, i32 y, u16 v)
+rc_t matrix_set_u16(matrix_u16_t mat, i32 x, i32 y, u16 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_i32(matrix_i32_t mat, i32 x, i32 y, i32 v)
+rc_t matrix_set_i32(matrix_i32_t mat, i32 x, i32 y, i32 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_u32(matrix_u32_t mat, i32 x, i32 y, u32 v)
+rc_t matrix_set_u32(matrix_u32_t mat, i32 x, i32 y, u32 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_i64(matrix_i64_t mat, i32 x, i32 y, i64 v)
+rc_t matrix_set_i64(matrix_i64_t mat, i32 x, i32 y, i64 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_u64(matrix_u64_t mat, i32 x, i32 y, u64 v)
+rc_t matrix_set_u64(matrix_u64_t mat, i32 x, i32 y, u64 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_f32(matrix_f32_t mat, i32 x, i32 y, f32 v)
+rc_t matrix_set_f32(matrix_f32_t mat, i32 x, i32 y, f32 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_f64(matrix_f64_t mat, i32 x, i32 y, f64 v)
+rc_t matrix_set_f64(matrix_f64_t mat, i32 x, i32 y, f64 v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_bool(matrix_bool_t mat, i32 x, i32 y, bool v)
+rc_t matrix_set_bool(matrix_bool_t mat, i32 x, i32 y, bool v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }
 
-Rc matrix_set_ptr(matrix_ptr_t mat, i32 x, i32 y, const void *v)
+rc_t matrix_set_ptr(matrix_ptr_t mat, i32 x, i32 y, const void *v)
 {
     return matrix_set_internal(mat, x, y, &v, sizeof(v));
 }

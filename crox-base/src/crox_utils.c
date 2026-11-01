@@ -6,7 +6,7 @@
 #include <string.h>
 #include <time.h>
 
-u64 get_timestamp_ms(void)
+u64 crox_time_get_epoch_timestamp_ms(void)
 {
     struct timespec ts;
     // TIME_UTC returns the system's real-time clock (Epoch time)
@@ -18,7 +18,7 @@ u64 get_timestamp_ms(void)
     return ((long long)ts.tv_sec * 1000LL) + (ts.tv_nsec / 1000000LL);
 }
 
-void str_replace_ip(char *str, const size_t str_capacity, const char *find, const char *replace)
+void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find, const char *replace)
 {
     size_t str_len = strlen(str);
     const size_t find_len = strlen(find);
@@ -56,17 +56,17 @@ void str_replace_ip(char *str, const size_t str_capacity, const char *find, cons
     }
 }
 
-void str_replace_cp(const char *str,               //
+void crox_str_replace_cp(const char *str,               //
                     char *out_str,                 //
                     const size_t out_str_capacity, //
                     const char *find,              //
                     const char *replace)
 {
     snprintf(out_str, out_str_capacity, "%s", str);
-    str_replace_ip(out_str, out_str_capacity, find, replace);
+    crox_str_replace_ip(out_str, out_str_capacity, find, replace);
 }
 
-void str_join(char *str, const size_t str_capacity, char *tokens[], const size_t tokens_count, const char *delimiter)
+void crox_str_join(char *str, const size_t str_capacity, char *tokens[], const size_t tokens_count, const char *delimiter)
 {
     str[0] = '\0';
     size_t used = 0;

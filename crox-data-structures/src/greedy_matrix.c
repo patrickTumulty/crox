@@ -6,7 +6,7 @@
 
 /* Greedy resize: keep the existing allocation and only grow it when the new
  * size exceeds the current capacity. */
-static Rc greedy_matrix_resize(matrix_t mat, int32_t height, int32_t width)
+static rc_t greedy_matrix_resize(matrix_t mat, int32_t height, int32_t width)
 {
     matrix_storage *storage = (matrix_storage *)mat;
     if (height <= 0 || width <= 0)
@@ -38,7 +38,7 @@ static Rc greedy_matrix_resize(matrix_t mat, int32_t height, int32_t width)
     return RC_OK;
 }
 
-Rc matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeSize)
+rc_t matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeSize)
 {
     return matrix_storage_init(out, height, width, typeSize, greedy_matrix_resize);
 }
@@ -46,7 +46,7 @@ Rc matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeS
 /* Emit a typed wrapper that creates a greedy matrix whose cells are one
  * `type`, forwarding to matrix_init_greedy() with sizeof(type). */
 #define DEFINE_GREEDY_INIT(suffix, type)                                       \
-    Rc matrix_init_greedy_##suffix(matrix_t *out, int32_t height, int32_t width) \
+    rc_t matrix_init_greedy_##suffix(matrix_t *out, int32_t height, int32_t width) \
     {                                                                          \
         return matrix_init_greedy(out, height, width, sizeof(type));           \
     }

@@ -32,7 +32,7 @@ extern "C"
  *                            would overflow.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed.
  */
-Rc matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeSize);
+rc_t matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeSize);
 
 /**
  * @brief Create a greedy matrix of a built-in variant.
@@ -48,18 +48,18 @@ Rc matrix_init_greedy(matrix_t *out, int32_t height, int32_t width, size_t typeS
  * @retval RC_BAD_INPUT_ARG   @p out is NULL or a dimension is not positive.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed.
  */
-Rc matrix_init_greedy_i8(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_u8(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_i16(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_u16(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_i32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_u32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_i64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_u64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_f32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_f64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_bool(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_greedy_ptr(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_i8(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_u8(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_i16(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_u16(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_i32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_u32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_i64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_u64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_f32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_f64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_bool(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_greedy_ptr(matrix_t *out, int32_t height, int32_t width);
 
 #ifdef __cplusplus
 }

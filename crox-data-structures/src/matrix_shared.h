@@ -15,10 +15,10 @@
  * standard_matrix.h instead. */
 
 /** @brief Read @p size bytes from cell (x, y) into @p out. */
-typedef Rc (*matrix_api_get)(matrix_t mat, i32 x, i32 y, void *out, size_t size);
+typedef rc_t (*matrix_api_get)(matrix_t mat, i32 x, i32 y, void *out, size_t size);
 
 /** @brief Write @p size bytes from @p v into cell (x, y). */
-typedef Rc (*matrix_api_set)(matrix_t mat, i32 x, i32 y, const void *v, size_t size);
+typedef rc_t (*matrix_api_set)(matrix_t mat, i32 x, i32 y, const void *v, size_t size);
 
 /** @brief Return a pointer to cell (x, y)'s raw bytes, or NULL if out of bounds. */
 typedef void *(*matrix_api_get_cell)(matrix_t mat, i32 x, i32 y);
@@ -30,7 +30,7 @@ typedef i32 (*matrix_api_get_width)(matrix_t mat);
 typedef i32 (*matrix_api_get_height)(matrix_t mat);
 
 /** @brief Resize the matrix to @p height rows by @p width columns. */
-typedef Rc (*matrix_api_resize)(matrix_t mat, i32 height, i32 width);
+typedef rc_t (*matrix_api_resize)(matrix_t mat, i32 height, i32 width);
 
 /** @brief Release the matrix and its backing store. */
 typedef void (*matrix_api_free)(matrix_t mat);
@@ -77,7 +77,7 @@ static inline bool matrix_mul_overflows(size_t a, size_t b)
 }
 
 /* Copy `size` bytes from cell (x, y) into `out`. */
-static inline Rc matrix_storage_get(matrix_t mat, i32 x, i32 y, void *out, size_t size)
+static inline rc_t matrix_storage_get(matrix_t mat, i32 x, i32 y, void *out, size_t size)
 {
     matrix_storage *storage = (matrix_storage *)mat;
     if (x < 0 || y < 0 || x >= storage->width || y >= storage->height)
@@ -91,7 +91,7 @@ static inline Rc matrix_storage_get(matrix_t mat, i32 x, i32 y, void *out, size_
 }
 
 /* Copy `size` bytes from `v` into cell (x, y). */
-static inline Rc matrix_storage_set(matrix_t mat, i32 x, i32 y, const void *v, size_t size)
+static inline rc_t matrix_storage_set(matrix_t mat, i32 x, i32 y, const void *v, size_t size)
 {
     matrix_storage *storage = (matrix_storage *)mat;
     if (x < 0 || y < 0 || x >= storage->width || y >= storage->height)
@@ -141,7 +141,7 @@ static inline void matrix_storage_free(matrix_t mat)
  * accessors into the vtable, and install `resize` as the implementation's
  * resize policy.
  */
-static inline Rc matrix_storage_init(matrix_t *out,      //
+static inline rc_t matrix_storage_init(matrix_t *out,      //
                                      i32 height,       //
                                      i32 width,        //
                                      size_t type_size, //

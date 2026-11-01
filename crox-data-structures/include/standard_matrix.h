@@ -34,7 +34,7 @@ extern "C"
  *                            would overflow.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed.
  */
-Rc matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize);
+rc_t matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize);
 
 /**
  * @brief Create a standard matrix of a built-in variant.
@@ -51,18 +51,18 @@ Rc matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize);
  * @retval RC_BAD_INPUT_ARG   @p out is NULL or a dimension is not positive.
  * @retval RC_MEM_ALLOC_ERROR Allocation failed.
  */
-Rc matrix_init_i8(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_u8(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_i16(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_u16(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_i32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_u32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_i64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_u64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_f32(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_f64(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_bool(matrix_t *out, int32_t height, int32_t width);
-Rc matrix_init_ptr(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_i8(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_u8(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_i16(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_u16(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_i32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_u32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_i64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_u64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_f32(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_f64(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_bool(matrix_t *out, int32_t height, int32_t width);
+rc_t matrix_init_ptr(matrix_t *out, int32_t height, int32_t width);
 
 #ifdef __cplusplus
 }

@@ -6,7 +6,7 @@
 
 /* Standard resize: always release the old store and allocate a fresh, zeroed
  * one sized exactly to the new dimensions, so no capacity is retained. */
-static Rc standard_matrix_resize(matrix_t mat, int32_t height, int32_t width)
+static rc_t standard_matrix_resize(matrix_t mat, int32_t height, int32_t width)
 {
     matrix_storage *storage = (matrix_storage *)mat;
     if (height <= 0 || width <= 0)
@@ -35,7 +35,7 @@ static Rc standard_matrix_resize(matrix_t mat, int32_t height, int32_t width)
     return RC_OK;
 }
 
-Rc matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize)
+rc_t matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize)
 {
     return matrix_storage_init(out, height, width, typeSize, standard_matrix_resize);
 }
@@ -43,7 +43,7 @@ Rc matrix_init(matrix_t *out, int32_t height, int32_t width, size_t typeSize)
 /* Emit a typed wrapper that creates a standard matrix whose cells are one
  * `type`, forwarding to matrix_init() with sizeof(type). */
 #define DEFINE_STANDARD_INIT(suffix, type)                              \
-    Rc matrix_init_##suffix(matrix_t *out, int32_t height, int32_t width) \
+    rc_t matrix_init_##suffix(matrix_t *out, int32_t height, int32_t width) \
     {                                                                   \
         return matrix_init(out, height, width, sizeof(type));           \
     }
