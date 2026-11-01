@@ -17,4 +17,21 @@ target_include_directories(${PROJECT_NAME}
         ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+if(CROX_BUILD_TESTS)
+    add_executable(${PROJECT_NAME}_tests)
+
+    target_sources(${PROJECT_NAME}_tests
+        PRIVATE
+            test/main.c
+    )
+
+    target_link_libraries(${PROJECT_NAME}_tests
+        PUBLIC
+            ${PROJECT_NAME}
+            munit
+    )
+
+    add_test(NAME ${PROJECT_NAME}_tests COMMAND ${PROJECT_NAME}_tests)
+endif()
+
 

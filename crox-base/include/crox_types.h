@@ -27,4 +27,6 @@ typedef enum
     RC_ALREADY_DONE,
 } Rc;
 
+#define STR_OR_DEFAULT(STR, DEF) ((STR) != NULL ? (STR) : (DEF))
+
 #endif // CROX_TYPES_H
