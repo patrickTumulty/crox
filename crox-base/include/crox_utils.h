@@ -5,12 +5,38 @@
 #include "crox_types.h"
 #include <stddef.h>
 
+#define CROX_PI     3.14159265358979323846
+#define CROX_PI_F 3.14159265358979323846f
+#define CROX_TAU    6.28318530717958647692
+#define CROX_TAU_F 6.28318530717958647692f
+
 /**
  * @brief get current system epoch time in millisesconds
  *
  * @return current epoch time in milliseconds
  */
 u64 crox_time_get_epoch_timestamp_ms(void);
+
+/**
+ * @brief get monotonic system uptime in seconds
+ *
+ * @return get monotonic system uptime in seconds
+ */
+f32 crox_time_get_monotonic_seconds(void);
+
+/**
+ * @brief get monotonic system uptime in milliseconds
+ *
+ * @return get monotonic system uptime in milliseconds
+ */
+u64 crox_time_get_monotonic_ms(void);
+
+/**
+ * @brief get monotonic system uptime in nanoseconds
+ *
+ * @return get monotonic system uptime in nanoseconds
+ */
+u64 crox_time_get_monotonic_ns(void);
 
 /**
  * @brief find and replace (in place)

@@ -1,21 +1,53 @@
 
-
+#define _POSIX_C_SOURCE 199309L
 #include "crox_utils.h"
 #include "crox_types.h"
 #include <stdio.h>
+#include <stdint.h>
+#include <time.h>
 #include <string.h>
 #include <time.h>
+
+u64 crox_time_get_monotonic_ns(void)
+{
+    static u64 start_ns = 0;
+    struct timespec ts;
+
+    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
+    {
+        return 0;
+    }
+
+    u64 now_ns = ((u64)ts.tv_sec * 1000000000ULL) + (u64)ts.tv_nsec;
+
+    if (start_ns == 0)
+    {
+        start_ns = now_ns;
+    }
+
+    return now_ns - start_ns;
+}
 
 u64 crox_time_get_epoch_timestamp_ms(void)
 {
     struct timespec ts;
-    // TIME_UTC returns the system's real-time clock (Epoch time)
-    if (timespec_get(&ts, TIME_UTC) == 0)
+
+    if (clock_gettime(CLOCK_REALTIME, &ts) != 0)
     {
-        return -1; // Error
+        return UINT64_MAX;
     }
-    // Convert seconds to ms and nanoseconds to ms
-    return ((long long)ts.tv_sec * 1000LL) + (ts.tv_nsec / 1000000LL);
+
+    return ((u64)ts.tv_sec * 1000ULL) + ((u64)ts.tv_nsec / 1000000ULL);
+}
+
+f32 crox_time_get_monotonic_seconds(void)
+{
+    return (f32)((double)crox_time_get_monotonic_ns() / 1e9);
+}
+
+u64 crox_time_get_monotonic_ms(void)
+{
+    return crox_time_get_monotonic_ns() / 1000000ULL;
 }
 
 void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find, const char *replace)
@@ -38,8 +70,8 @@ void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find,
         }
 
         size_t new_len = replace_len > find_len ? //
-                             str_len + (replace_len - find_len) :
-                             str_len - (find_len - replace_len);
+                             str_len + (replace_len - find_len)
+                                                : str_len - (find_len - replace_len);
 
         if (new_len >= str_capacity)
             return;
@@ -57,16 +89,20 @@ void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find,
 }
 
 void crox_str_replace_cp(const char *str,               //
-                    char *out_str,                 //
-                    const size_t out_str_capacity, //
-                    const char *find,              //
-                    const char *replace)
+                         char *out_str,                 //
+                         const size_t out_str_capacity, //
+                         const char *find,              //
+                         const char *replace)
 {
     snprintf(out_str, out_str_capacity, "%s", str);
     crox_str_replace_ip(out_str, out_str_capacity, find, replace);
 }
 
-void crox_str_join(char *str, const size_t str_capacity, char *tokens[], const size_t tokens_count, const char *delimiter)
+void crox_str_join(char *str,
+                   const size_t str_capacity,
+                   char *tokens[],
+                   const size_t tokens_count,
+                   const char *delimiter)
 {
     str[0] = '\0';
     size_t used = 0;
