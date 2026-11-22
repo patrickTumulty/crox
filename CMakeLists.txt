@@ -11,11 +11,13 @@ add_library(${PROJECT_NAME} INTERFACE)
 
 add_subdirectory(crox-base)
 add_subdirectory(crox-data-structures)
+add_subdirectory(crox-ipc)
 add_subdirectory(crox-logging)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
     crox-base
     crox-data-structures
+    crox-ipc
     crox-logging
 )
 
