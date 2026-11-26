@@ -1,53 +1,38 @@
 
-#define _POSIX_C_SOURCE 199309L
+#define _DEFAULT_SOURCE
 #include "crox_utils.h"
 #include "crox_types.h"
-#include <stdio.h>
+#include <math.h>
 #include <stdint.h>
-#include <time.h>
+#include <stdio.h>
 #include <string.h>
 #include <time.h>
 
 u64 crox_time_get_monotonic_ns(void)
 {
-    static u64 start_ns = 0;
     struct timespec ts;
+    clock_gettime(CLOCK_MONOTONIC, &ts);
+    return (u64)ts.tv_sec * 1000000000ULL + (u64)ts.tv_nsec;
+}
 
-    if (clock_gettime(CLOCK_MONOTONIC, &ts) != 0)
-    {
-        return 0;
-    }
-
-    u64 now_ns = ((u64)ts.tv_sec * 1000000000ULL) + (u64)ts.tv_nsec;
-
-    if (start_ns == 0)
-    {
-        start_ns = now_ns;
-    }
-
-    return now_ns - start_ns;
+u64 crox_time_get_monotonic_ms(void)
+{
+    return crox_time_get_monotonic_ns() / 1000000ULL;
 }
 
 u64 crox_time_get_epoch_timestamp_ms(void)
 {
     struct timespec ts;
-
     if (clock_gettime(CLOCK_REALTIME, &ts) != 0)
     {
         return UINT64_MAX;
     }
-
     return ((u64)ts.tv_sec * 1000ULL) + ((u64)ts.tv_nsec / 1000000ULL);
 }
 
 f32 crox_time_get_monotonic_seconds(void)
 {
     return (f32)((double)crox_time_get_monotonic_ns() / 1e9);
-}
-
-u64 crox_time_get_monotonic_ms(void)
-{
-    return crox_time_get_monotonic_ns() / 1000000ULL;
 }
 
 void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find, const char *replace)
@@ -70,8 +55,8 @@ void crox_str_replace_ip(char *str, const size_t str_capacity, const char *find,
         }
 
         size_t new_len = replace_len > find_len ? //
-                             str_len + (replace_len - find_len)
-                                                : str_len - (find_len - replace_len);
+                             str_len + (replace_len - find_len) :
+                             str_len - (find_len - replace_len);
 
         if (new_len >= str_capacity)
             return;
@@ -98,10 +83,10 @@ void crox_str_replace_cp(const char *str,               //
     crox_str_replace_ip(out_str, out_str_capacity, find, replace);
 }
 
-void crox_str_join(char *str,
-                   const size_t str_capacity,
-                   char *tokens[],
-                   const size_t tokens_count,
+void crox_str_join(char *str,                 //
+                   const size_t str_capacity, //
+                   char *tokens[],            //
+                   const size_t tokens_count, //
                    const char *delimiter)
 {
     str[0] = '\0';
@@ -117,4 +102,9 @@ void crox_str_join(char *str,
         }
         used += (size_t)written;
     }
+}
+
+float crox_clampf(float value, float min, float max)
+{
+    return fminf(max, fmaxf(min, value));
 }

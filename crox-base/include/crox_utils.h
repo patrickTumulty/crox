@@ -78,4 +78,6 @@ void crox_str_join(char *str,                 //
                    const size_t tokens_count, //
                    const char *delimiter);
 
+float crox_clampf(float value, float min, float max);
+
 #endif // CROX_UTILS_H
